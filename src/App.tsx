@@ -5,6 +5,7 @@ import { prefixer } from 'stylis'
 import rtlPlugin from 'stylis-plugin-rtl'
 import { CacheProvider } from '@emotion/react'
 import createCache from '@emotion/cache'
+import { DataProvider } from './context/DataContext'
 import Dashboard from './components/Dashboard'
 import Suppliers from './components/Suppliers'
 import Quotes from './components/Quotes'
@@ -79,51 +80,53 @@ function App() {
     <CacheProvider value={cacheRtl}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <AppBar position="static" elevation={2}>
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              🏗️ ניהול תקציב פרויקט בניה
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        
-        <Container maxWidth="xl" sx={{ mt: 2 }}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-            <Tabs 
-              value={currentTab} 
-              onChange={handleTabChange}
-              variant="fullWidth"
-              textColor="primary"
-              indicatorColor="primary"
-            >
-              <Tab label="📊 סקירה" />
-              <Tab label="🏢 ספקים" />
-              <Tab label="💼 הצעות מחיר" />
-              <Tab label="📄 חשבוניות" />
-              <Tab label="💰 תשלומים" />
-              <Tab label="⚙️ הגדרות" />
-            </Tabs>
-          </Box>
+        <DataProvider>
+          <AppBar position="static" elevation={2}>
+            <Toolbar>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                🏗️ ניהול תקציב פרויקט בניה
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          
+          <Container maxWidth="xl" sx={{ mt: 2 }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+              <Tabs 
+                value={currentTab} 
+                onChange={handleTabChange}
+                variant="fullWidth"
+                textColor="primary"
+                indicatorColor="primary"
+              >
+                <Tab label="📊 סקירה" />
+                <Tab label="🏢 ספקים" />
+                <Tab label="💼 הצעות מחיר" />
+                <Tab label="📄 חשבוניות" />
+                <Tab label="💰 תשלומים" />
+                <Tab label="⚙️ הגדרות" />
+              </Tabs>
+            </Box>
 
-          <TabPanel value={currentTab} index={0}>
-            <Dashboard />
-          </TabPanel>
-          <TabPanel value={currentTab} index={1}>
-            <Suppliers />
-          </TabPanel>
-          <TabPanel value={currentTab} index={2}>
-            <Quotes />
-          </TabPanel>
-          <TabPanel value={currentTab} index={3}>
-            <Invoices />
-          </TabPanel>
-          <TabPanel value={currentTab} index={4}>
-            <Payments />
-          </TabPanel>
-          <TabPanel value={currentTab} index={5}>
-            <Settings />
-          </TabPanel>
-        </Container>
+            <TabPanel value={currentTab} index={0}>
+              <Dashboard />
+            </TabPanel>
+            <TabPanel value={currentTab} index={1}>
+              <Suppliers />
+            </TabPanel>
+            <TabPanel value={currentTab} index={2}>
+              <Quotes />
+            </TabPanel>
+            <TabPanel value={currentTab} index={3}>
+              <Invoices />
+            </TabPanel>
+            <TabPanel value={currentTab} index={4}>
+              <Payments />
+            </TabPanel>
+            <TabPanel value={currentTab} index={5}>
+              <Settings />
+            </TabPanel>
+          </Container>
+        </DataProvider>
       </ThemeProvider>
     </CacheProvider>
   )
