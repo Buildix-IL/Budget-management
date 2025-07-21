@@ -338,7 +338,12 @@ const Suppliers = () => {
         onClose={handleCloseDialog}
         maxWidth="sm"
         fullWidth
-        sx={{ direction: 'rtl' }}
+        sx={{ 
+          direction: 'rtl',
+          '& .MuiDialog-paper': {
+            direction: 'rtl'
+          }
+        }}
       >
         <DialogTitle sx={{ direction: 'rtl', textAlign: 'right' }}>
           {isEditMode ? 'ערוך ספק' : 'הוסף ספק חדש'}
@@ -365,8 +370,27 @@ const Suppliers = () => {
                 error={formErrors.some(e => e.includes('שם פרטי'))}
                 helperText={formErrors.find(e => e.includes('שם פרטי'))}
                 sx={{ 
-                  '& .MuiInputBase-input': { textAlign: 'right', direction: 'rtl' },
-                  '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+                  direction: 'rtl',
+                  '& .MuiInputBase-root': {
+                    direction: 'rtl'
+                  },
+                  '& .MuiInputBase-input': { 
+                    textAlign: 'right',
+                    direction: 'rtl'
+                  },
+                  '& .MuiFormLabel-root': { 
+                    right: 14, 
+                    left: 'auto', 
+                    transformOrigin: 'top right',
+                    textAlign: 'right'
+                  },
+                  '& .MuiFormHelperText-root': {
+                    textAlign: 'right',
+                    direction: 'rtl'
+                  }
+                }}
+                InputProps={{
+                  sx: { direction: 'rtl' }
                 }}
               />
               
@@ -379,8 +403,27 @@ const Suppliers = () => {
                 error={formErrors.some(e => e.includes('שם משפחה'))}
                 helperText={formErrors.find(e => e.includes('שם משפחה'))}
                 sx={{ 
-                  '& .MuiInputBase-input': { textAlign: 'right', direction: 'rtl' },
-                  '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+                  direction: 'rtl',
+                  '& .MuiInputBase-root': {
+                    direction: 'rtl'
+                  },
+                  '& .MuiInputBase-input': { 
+                    textAlign: 'right',
+                    direction: 'rtl'
+                  },
+                  '& .MuiFormLabel-root': { 
+                    right: 14, 
+                    left: 'auto', 
+                    transformOrigin: 'top right',
+                    textAlign: 'right'
+                  },
+                  '& .MuiFormHelperText-root': {
+                    textAlign: 'right',
+                    direction: 'rtl'
+                  }
+                }}
+                InputProps={{
+                  sx: { direction: 'rtl' }
                 }}
               />
             </Box>
@@ -392,8 +435,23 @@ const Suppliers = () => {
               value={formData.companyName}
               onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
               sx={{ 
-                '& .MuiInputBase-input': { textAlign: 'right', direction: 'rtl' },
-                '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+                direction: 'rtl',
+                '& .MuiInputBase-root': {
+                  direction: 'rtl'
+                },
+                '& .MuiInputBase-input': { 
+                  textAlign: 'right',
+                  direction: 'rtl'
+                },
+                '& .MuiFormLabel-root': { 
+                  right: 14, 
+                  left: 'auto', 
+                  transformOrigin: 'top right',
+                  textAlign: 'right'
+                }
+              }}
+              InputProps={{
+                sx: { direction: 'rtl' }
               }}
             />
             
@@ -406,8 +464,27 @@ const Suppliers = () => {
               error={formErrors.some(e => e.includes('מקצוע'))}
               helperText={formErrors.find(e => e.includes('מקצוע'))}
               sx={{ 
-                '& .MuiInputBase-input': { textAlign: 'right', direction: 'rtl' },
-                '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+                direction: 'rtl',
+                '& .MuiInputBase-root': {
+                  direction: 'rtl'
+                },
+                '& .MuiInputBase-input': { 
+                  textAlign: 'right',
+                  direction: 'rtl'
+                },
+                '& .MuiFormLabel-root': { 
+                  right: 14, 
+                  left: 'auto', 
+                  transformOrigin: 'top right',
+                  textAlign: 'right'
+                },
+                '& .MuiFormHelperText-root': {
+                  textAlign: 'right',
+                  direction: 'rtl'
+                }
+              }}
+              InputProps={{
+                sx: { direction: 'rtl' }
               }}
             />
             
@@ -421,8 +498,27 @@ const Suppliers = () => {
                 error={formErrors.some(e => e.includes('טלפון'))}
                 helperText={formErrors.find(e => e.includes('טלפון'))}
                 sx={{ 
-                  '& .MuiInputBase-input': { textAlign: 'right', direction: 'rtl' },
-                  '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+                  direction: 'rtl',
+                  '& .MuiInputBase-root': {
+                    direction: 'rtl'
+                  },
+                  '& .MuiInputBase-input': { 
+                    textAlign: 'right',
+                    direction: 'rtl'
+                  },
+                  '& .MuiFormLabel-root': { 
+                    right: 14, 
+                    left: 'auto', 
+                    transformOrigin: 'top right',
+                    textAlign: 'right'
+                  },
+                  '& .MuiFormHelperText-root': {
+                    textAlign: 'right',
+                    direction: 'rtl'
+                  }
+                }}
+                InputProps={{
+                  sx: { direction: 'rtl' }
                 }}
               />
               
@@ -436,8 +532,27 @@ const Suppliers = () => {
                 error={formErrors.some(e => e.includes('אימייל'))}
                 helperText={formErrors.find(e => e.includes('אימייל'))}
                 sx={{ 
-                  '& .MuiInputBase-input': { textAlign: 'left', direction: 'ltr' },
-                  '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+                  direction: 'rtl',
+                  '& .MuiInputBase-root': {
+                    direction: 'ltr'
+                  },
+                  '& .MuiInputBase-input': { 
+                    textAlign: 'left',
+                    direction: 'ltr'
+                  },
+                  '& .MuiFormLabel-root': { 
+                    right: 14, 
+                    left: 'auto', 
+                    transformOrigin: 'top right',
+                    textAlign: 'right'
+                  },
+                  '& .MuiFormHelperText-root': {
+                    textAlign: 'right',
+                    direction: 'rtl'
+                  }
+                }}
+                InputProps={{
+                  sx: { direction: 'ltr' }
                 }}
               />
             </Box>
@@ -451,11 +566,30 @@ const Suppliers = () => {
               inputProps={{ min: 0, max: 100, step: 0.1 }}
               sx={{ 
                 maxWidth: 200,
-                '& .MuiInputBase-input': { textAlign: 'right', direction: 'rtl' },
-                '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+                direction: 'rtl',
+                '& .MuiInputBase-root': {
+                  direction: 'rtl'
+                },
+                '& .MuiInputBase-input': { 
+                  textAlign: 'right',
+                  direction: 'rtl'
+                },
+                '& .MuiFormLabel-root': { 
+                  right: 14, 
+                  left: 'auto', 
+                  transformOrigin: 'top right',
+                  textAlign: 'right'
+                },
+                '& .MuiFormHelperText-root': {
+                  textAlign: 'right',
+                  direction: 'rtl'
+                }
               }}
               error={formErrors.some(e => e.includes('מע"מ'))}
               helperText={formErrors.find(e => e.includes('מע"מ')) || 'אחוז המע״מ שיחושב בחשבוניות מספק זה'}
+              InputProps={{
+                sx: { direction: 'rtl' }
+              }}
             />
           </Box>
 
