@@ -227,9 +227,41 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const payments = loadData('payments') || [];
     const settings = loadData('settings') || initialState.settings;
 
+    // Migrate old suppliers to new structure
+    const migratedSuppliers = suppliers.map((supplier: any) => {
+      // If supplier has old structure (name instead of firstName/lastName)
+      if (supplier.name && !supplier.firstName && !supplier.lastName) {
+        const nameParts = supplier.name.trim().split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+        
+        return {
+          ...supplier,
+          firstName,
+          lastName,
+          companyName: supplier.companyName || '',
+          // Remove old name property
+          name: undefined
+        };
+      }
+      
+      // Ensure all required fields exist with defaults
+      return {
+        ...supplier,
+        firstName: supplier.firstName || '',
+        lastName: supplier.lastName || '',
+        companyName: supplier.companyName || '',
+        profession: supplier.profession || '',
+        phone: supplier.phone || '',
+        email: supplier.email || '',
+        defaultVat: supplier.defaultVat || 18,
+        fields: supplier.fields || {}
+      };
+    });
+
     dispatch({
       type: 'LOAD_DATA',
-      payload: { suppliers, quotes, invoices, payments, settings, loading: false }
+      payload: { suppliers: migratedSuppliers, quotes, invoices, payments, settings, loading: false }
     });
   }, []);
 
@@ -289,24 +321,25 @@ export function DataProvider({ children }: { children: ReactNode }) {
       errors.push('טלפון או אימייל חובה');
     }
     
-    // Email validation
-    if (data.email?.trim()) {
+    // Email validation - safe check for undefined
+    if (data.email && data.email.trim()) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(data.email.trim())) {
         errors.push('כתובת האימייל אינה תקינה');
       }
     }
     
-    // Phone validation (basic Israeli phone format)
-    if (data.phone?.trim()) {
+    // Phone validation (basic Israeli phone format) - safe check for undefined
+    if (data.phone && data.phone.trim()) {
       const phoneRegex = /^(\+972|0)?[-\s]?[0-9]{1,2}[-\s]?[0-9]{7}$/;
       if (!phoneRegex.test(data.phone.trim().replace(/[-\s]/g, ''))) {
         errors.push('מספר הטלפון אינו תקין');
       }
     }
     
-    // VAT validation
-    if (data.defaultVat < 0 || data.defaultVat > 100) {
+    // VAT validation - safe check for undefined
+    const vat = data.defaultVat || 0;
+    if (vat < 0 || vat > 100) {
       errors.push('אחוז המע"מ חייב להיות בין 0 ל-100');
     }
     

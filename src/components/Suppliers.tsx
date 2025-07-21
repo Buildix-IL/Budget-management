@@ -38,32 +38,44 @@ const Suppliers = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [menuSupplierId, setMenuSupplierId] = useState<string | null>(null)
 
-  // Filter suppliers based on search
-  const filteredSuppliers = state.suppliers.filter(supplier =>
-    `${supplier.firstName} ${supplier.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    supplier.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    supplier.profession.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    supplier.phone.includes(searchTerm) ||
-    supplier.email.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Filter suppliers based on search - with safe access
+  const filteredSuppliers = state.suppliers.filter(supplier => {
+    const firstName = supplier.firstName || '';
+    const lastName = supplier.lastName || '';
+    const fullName = `${firstName} ${lastName}`.trim();
+    const companyName = supplier.companyName || '';
+    const profession = supplier.profession || '';
+    const phone = supplier.phone || '';
+    const email = supplier.email || '';
+    
+    return fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           profession.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           phone.includes(searchTerm) ||
+           email.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   const getSupplierDisplayName = (supplier: Supplier) => {
-    const fullName = `${supplier.firstName} ${supplier.lastName}`.trim()
-    return supplier.companyName ? `${supplier.companyName} (${fullName})` : fullName
+    const firstName = supplier.firstName || '';
+    const lastName = supplier.lastName || '';
+    const fullName = `${firstName} ${lastName}`.trim();
+    const companyName = supplier.companyName || '';
+    
+    return companyName ? `${companyName} (${fullName})` : fullName || 'ספק ללא שם';
   }
 
   const handleOpenDialog = (supplier?: Supplier) => {
     if (supplier) {
       setSelectedSupplier(supplier)
       setFormData({
-        firstName: supplier.firstName,
-        lastName: supplier.lastName,
+        firstName: supplier.firstName || '',
+        lastName: supplier.lastName || '',
         companyName: supplier.companyName || '',
-        profession: supplier.profession,
-        phone: supplier.phone,
-        email: supplier.email,
-        defaultVat: supplier.defaultVat,
-        fields: supplier.fields
+        profession: supplier.profession || '',
+        phone: supplier.phone || '',
+        email: supplier.email || '',
+        defaultVat: supplier.defaultVat || state.settings.defaultVat,
+        fields: supplier.fields || {}
       })
       setIsEditMode(true)
     } else {
@@ -92,16 +104,27 @@ const Suppliers = () => {
   }
 
   const handleSubmit = () => {
-    const errors = validateSupplier(formData)
+    // Ensure all fields are strings to avoid trim() errors
+    const safeFormData = {
+      ...formData,
+      firstName: formData.firstName || '',
+      lastName: formData.lastName || '',
+      companyName: formData.companyName || '',
+      profession: formData.profession || '',
+      phone: formData.phone || '',
+      email: formData.email || ''
+    };
+
+    const errors = validateSupplier(safeFormData)
     if (errors.length > 0) {
       setFormErrors(errors)
       return
     }
 
     if (isEditMode && selectedSupplier) {
-      updateSupplier(selectedSupplier.id, formData)
+      updateSupplier(selectedSupplier.id, safeFormData)
     } else {
-      addSupplier(formData)
+      addSupplier(safeFormData)
     }
     
     handleCloseDialog()
@@ -231,11 +254,11 @@ const Suppliers = () => {
                 <Box display="flex" alignItems="center" gap={1} mb={1}>
                   <PersonIcon fontSize="small" color="action" />
                   <Typography variant="h6" noWrap sx={{ direction: 'rtl', textAlign: 'right' }}>
-                    {`${supplier.firstName} ${supplier.lastName}`}
+                    {`${supplier.firstName || ''} ${supplier.lastName || ''}`.trim() || 'ספק ללא שם'}
                   </Typography>
                 </Box>
 
-                {supplier.companyName && (
+                {(supplier.companyName && supplier.companyName.trim()) && (
                   <Box display="flex" alignItems="center" gap={1} mb={2}>
                     <BusinessIcon fontSize="small" color="action" />
                     <Typography variant="body2" color="text.secondary" noWrap sx={{ direction: 'rtl', textAlign: 'right' }}>
@@ -245,7 +268,7 @@ const Suppliers = () => {
                 )}
                 
                 <Chip 
-                  label={supplier.profession}
+                  label={supplier.profession || 'ללא מקצוע'}
                   size="small"
                   color="primary"
                   variant="outlined"
@@ -253,7 +276,7 @@ const Suppliers = () => {
                 />
 
                 <Box display="flex" flexDirection="column" gap={1} sx={{ direction: 'rtl', textAlign: 'right' }}>
-                  {supplier.phone && (
+                  {(supplier.phone && supplier.phone.trim()) && (
                     <Box display="flex" alignItems="center" gap={1} sx={{ direction: 'rtl' }}>
                       <PhoneIcon fontSize="small" color="action" />
                       <Typography variant="body2" color="text.secondary" sx={{ direction: 'rtl' }}>
@@ -262,7 +285,7 @@ const Suppliers = () => {
                     </Box>
                   )}
                   
-                  {supplier.email && (
+                  {(supplier.email && supplier.email.trim()) && (
                     <Box display="flex" alignItems="center" gap={1} sx={{ direction: 'rtl' }}>
                       <EmailIcon fontSize="small" color="action" />
                       <Typography variant="body2" color="text.secondary" noWrap sx={{ direction: 'rtl' }}>
@@ -275,7 +298,7 @@ const Suppliers = () => {
                   
                   <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ direction: 'rtl' }}>
                     <Typography variant="caption" color="text.secondary" sx={{ direction: 'rtl' }}>
-                      מע״מ: {supplier.defaultVat}%
+                      מע״מ: {supplier.defaultVat || 0}%
                     </Typography>
                     <Typography variant="caption" color="text.secondary" sx={{ direction: 'rtl' }}>
                       נוצר: {formatCreatedDate(supplier.createdAt)}
