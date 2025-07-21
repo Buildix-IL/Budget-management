@@ -6,7 +6,9 @@ export interface BaseEntity {
 
 // Supplier types
 export interface Supplier extends BaseEntity {
-  name: string;
+  firstName: string;        // שם פרטי של איש הקשר
+  lastName: string;         // שם משפחה של איש הקשר  
+  companyName?: string;     // שם חברה (אופציונלי)
   profession: string;
   phone: string;
   email: string;
@@ -15,7 +17,9 @@ export interface Supplier extends BaseEntity {
 }
 
 export interface SupplierFormData {
-  name: string;
+  firstName: string;
+  lastName: string;
+  companyName?: string;
   profession: string;
   phone: string;
   email: string;

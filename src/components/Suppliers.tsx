@@ -13,7 +13,8 @@ import {
   Email as EmailIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  MoreVert as MoreVertIcon
+  MoreVert as MoreVertIcon,
+  Person as PersonIcon
 } from '@mui/icons-material'
 import { useData } from '../context/DataContext'
 import type { Supplier, SupplierFormData } from '../types'
@@ -25,7 +26,9 @@ const Suppliers = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [formData, setFormData] = useState<SupplierFormData>({
-    name: '',
+    firstName: '',
+    lastName: '',
+    companyName: '',
     profession: '',
     phone: '',
     email: '',
@@ -37,17 +40,25 @@ const Suppliers = () => {
 
   // Filter suppliers based on search
   const filteredSuppliers = state.suppliers.filter(supplier =>
-    supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    `${supplier.firstName} ${supplier.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    supplier.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     supplier.profession.toLowerCase().includes(searchTerm.toLowerCase()) ||
     supplier.phone.includes(searchTerm) ||
     supplier.email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  const getSupplierDisplayName = (supplier: Supplier) => {
+    const fullName = `${supplier.firstName} ${supplier.lastName}`.trim()
+    return supplier.companyName ? `${supplier.companyName} (${fullName})` : fullName
+  }
+
   const handleOpenDialog = (supplier?: Supplier) => {
     if (supplier) {
       setSelectedSupplier(supplier)
       setFormData({
-        name: supplier.name,
+        firstName: supplier.firstName,
+        lastName: supplier.lastName,
+        companyName: supplier.companyName || '',
         profession: supplier.profession,
         phone: supplier.phone,
         email: supplier.email,
@@ -58,7 +69,9 @@ const Suppliers = () => {
     } else {
       setSelectedSupplier(null)
       setFormData({
-        name: '',
+        firstName: '',
+        lastName: '',
+        companyName: '',
         profession: '',
         phone: '',
         email: '',
@@ -116,9 +129,9 @@ const Suppliers = () => {
   }
 
   return (
-    <Box>
+    <Box dir="rtl" sx={{ textAlign: 'right' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4">
+        <Typography variant="h4" sx={{ direction: 'rtl', textAlign: 'right' }}>
           🏢 ניהול ספקים
         </Typography>
         <Button
@@ -126,6 +139,7 @@ const Suppliers = () => {
           startIcon={<AddIcon />}
           onClick={() => handleOpenDialog()}
           size="large"
+          sx={{ direction: 'rtl' }}
         >
           הוסף ספק
         </Button>
@@ -145,35 +159,43 @@ const Suppliers = () => {
               </InputAdornment>
             )
           }}
-          sx={{ maxWidth: 500 }}
+          sx={{ 
+            maxWidth: 500,
+            direction: 'rtl',
+            '& .MuiInputBase-input': {
+              textAlign: 'right',
+              direction: 'rtl'
+            }
+          }}
         />
       </Box>
 
       {/* Statistics */}
-      <Box mb={3}>
+      <Box mb={3} sx={{ direction: 'rtl', textAlign: 'right' }}>
         <Chip 
           label={`סך הכל: ${state.suppliers.length} ספקים`}
           variant="outlined"
-          sx={{ mr: 1 }}
+          sx={{ mr: 1, direction: 'rtl' }}
         />
         {searchTerm && (
           <Chip 
             label={`נמצאו: ${filteredSuppliers.length} תוצאות`}
             color="primary"
             variant="outlined"
+            sx={{ direction: 'rtl' }}
           />
         )}
       </Box>
 
       {/* Suppliers Grid */}
       {filteredSuppliers.length === 0 ? (
-        <Card>
-          <CardContent sx={{ textAlign: 'center', py: 6 }}>
+        <Card sx={{ direction: 'rtl' }}>
+          <CardContent sx={{ textAlign: 'center', py: 6, direction: 'rtl' }}>
             <BusinessIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
-            <Typography variant="h6" color="text.secondary" gutterBottom>
+            <Typography variant="h6" color="text.secondary" gutterBottom sx={{ direction: 'rtl' }}>
               {searchTerm ? 'לא נמצאו ספקים התואמים לחיפוש' : 'עדיין לא הוספת ספקים'}
             </Typography>
-            <Typography variant="body2" color="text.secondary" mb={3}>
+            <Typography variant="body2" color="text.secondary" mb={3} sx={{ direction: 'rtl' }}>
               {searchTerm ? 'נסה לשנות את מונחי החיפוש' : 'התחל בהוספת הספק הראשון שלך'}
             </Typography>
             {!searchTerm && (
@@ -181,6 +203,7 @@ const Suppliers = () => {
                 variant="contained"
                 startIcon={<AddIcon />}
                 onClick={() => handleOpenDialog()}
+                sx={{ direction: 'rtl' }}
               >
                 הוסף ספק ראשון
               </Button>
@@ -192,44 +215,57 @@ const Suppliers = () => {
           display="grid" 
           gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))" 
           gap={3}
+          sx={{ direction: 'rtl' }}
         >
           {filteredSuppliers.map((supplier) => (
-            <Card key={supplier.id} sx={{ height: 'fit-content', position: 'relative' }}>
-              <CardContent>
+            <Card key={supplier.id} sx={{ height: 'fit-content', position: 'relative', direction: 'rtl', textAlign: 'right' }}>
+              <CardContent sx={{ direction: 'rtl' }}>
                 {/* Menu button */}
                 <IconButton
-                  sx={{ position: 'absolute', top: 8, right: 8 }}
+                  sx={{ position: 'absolute', top: 8, left: 8 }}
                   onClick={(e) => handleMenuOpen(e, supplier.id)}
                 >
                   <MoreVertIcon />
                 </IconButton>
 
-                <Typography variant="h6" gutterBottom noWrap>
-                  {supplier.name}
-                </Typography>
+                <Box display="flex" alignItems="center" gap={1} mb={1}>
+                  <PersonIcon fontSize="small" color="action" />
+                  <Typography variant="h6" noWrap sx={{ direction: 'rtl', textAlign: 'right' }}>
+                    {`${supplier.firstName} ${supplier.lastName}`}
+                  </Typography>
+                </Box>
+
+                {supplier.companyName && (
+                  <Box display="flex" alignItems="center" gap={1} mb={2}>
+                    <BusinessIcon fontSize="small" color="action" />
+                    <Typography variant="body2" color="text.secondary" noWrap sx={{ direction: 'rtl', textAlign: 'right' }}>
+                      {supplier.companyName}
+                    </Typography>
+                  </Box>
+                )}
                 
                 <Chip 
                   label={supplier.profession}
                   size="small"
                   color="primary"
                   variant="outlined"
-                  sx={{ mb: 2 }}
+                  sx={{ mb: 2, direction: 'rtl' }}
                 />
 
-                <Box display="flex" flexDirection="column" gap={1}>
+                <Box display="flex" flexDirection="column" gap={1} sx={{ direction: 'rtl', textAlign: 'right' }}>
                   {supplier.phone && (
-                    <Box display="flex" alignItems="center" gap={1}>
+                    <Box display="flex" alignItems="center" gap={1} sx={{ direction: 'rtl' }}>
                       <PhoneIcon fontSize="small" color="action" />
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" color="text.secondary" sx={{ direction: 'rtl' }}>
                         {supplier.phone}
                       </Typography>
                     </Box>
                   )}
                   
                   {supplier.email && (
-                    <Box display="flex" alignItems="center" gap={1}>
+                    <Box display="flex" alignItems="center" gap={1} sx={{ direction: 'rtl' }}>
                       <EmailIcon fontSize="small" color="action" />
-                      <Typography variant="body2" color="text.secondary" noWrap>
+                      <Typography variant="body2" color="text.secondary" noWrap sx={{ direction: 'rtl' }}>
                         {supplier.email}
                       </Typography>
                     </Box>
@@ -237,11 +273,11 @@ const Suppliers = () => {
 
                   <Divider sx={{ my: 1 }} />
                   
-                  <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant="caption" color="text.secondary">
-                      מע"מ: {supplier.defaultVat}%
+                  <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ direction: 'rtl' }}>
+                    <Typography variant="caption" color="text.secondary" sx={{ direction: 'rtl' }}>
+                      מע״מ: {supplier.defaultVat}%
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" color="text.secondary" sx={{ direction: 'rtl' }}>
                       נוצר: {formatCreatedDate(supplier.createdAt)}
                     </Typography>
                   </Box>
@@ -257,6 +293,7 @@ const Suppliers = () => {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        sx={{ direction: 'rtl' }}
       >
         <MenuItem 
           onClick={() => {
@@ -264,8 +301,9 @@ const Suppliers = () => {
             if (supplier) handleOpenDialog(supplier)
             handleMenuClose()
           }}
+          sx={{ direction: 'rtl', textAlign: 'right' }}
         >
-          <EditIcon sx={{ mr: 1 }} />
+          <EditIcon sx={{ ml: 1 }} />
           ערוך
         </MenuItem>
         <MenuItem 
@@ -273,9 +311,9 @@ const Suppliers = () => {
             if (menuSupplierId) handleDelete(menuSupplierId)
             handleMenuClose()
           }}
-          sx={{ color: 'error.main' }}
+          sx={{ color: 'error.main', direction: 'rtl', textAlign: 'right' }}
         >
-          <DeleteIcon sx={{ mr: 1 }} />
+          <DeleteIcon sx={{ ml: 1 }} />
           מחק
         </MenuItem>
       </Menu>
@@ -286,14 +324,15 @@ const Suppliers = () => {
         onClose={handleCloseDialog}
         maxWidth="sm"
         fullWidth
+        sx={{ direction: 'rtl' }}
       >
-        <DialogTitle>
+        <DialogTitle sx={{ direction: 'rtl', textAlign: 'right' }}>
           {isEditMode ? 'ערוך ספק' : 'הוסף ספק חדש'}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ direction: 'rtl' }}>
           {formErrors.length > 0 && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              <ul style={{ margin: 0, paddingRight: 20 }}>
+            <Alert severity="error" sx={{ mb: 2, direction: 'rtl', textAlign: 'right' }}>
+              <ul style={{ margin: 0, paddingRight: 20, textAlign: 'right' }}>
                 {formErrors.map((error, index) => (
                   <li key={index}>{error}</li>
                 ))}
@@ -301,15 +340,47 @@ const Suppliers = () => {
             </Alert>
           )}
 
-          <Box display="flex" flexDirection="column" gap={2} sx={{ mt: 1 }}>
+          <Box display="flex" flexDirection="column" gap={2} sx={{ mt: 1, direction: 'rtl' }}>
+            <Box display="flex" gap={2}>
+              <TextField
+                fullWidth
+                label="שם פרטי *"
+                placeholder="לדוגמה: יוסי"
+                value={formData.firstName}
+                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                error={formErrors.some(e => e.includes('שם פרטי'))}
+                helperText={formErrors.find(e => e.includes('שם פרטי'))}
+                sx={{ 
+                  '& .MuiInputBase-input': { textAlign: 'right', direction: 'rtl' },
+                  '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+                }}
+              />
+              
+              <TextField
+                fullWidth
+                label="שם משפחה *"
+                placeholder="לדוגמה: כהן"
+                value={formData.lastName}
+                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                error={formErrors.some(e => e.includes('שם משפחה'))}
+                helperText={formErrors.find(e => e.includes('שם משפחה'))}
+                sx={{ 
+                  '& .MuiInputBase-input': { textAlign: 'right', direction: 'rtl' },
+                  '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+                }}
+              />
+            </Box>
+
             <TextField
               fullWidth
-              label="שם הספק *"
-              placeholder="לדוגמה: חברת שיפוצים מעולים"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              error={formErrors.some(e => e.includes('שם'))}
-              helperText={formErrors.find(e => e.includes('שם'))}
+              label="שם חברה (אופציונלי)"
+              placeholder="לדוגמה: שיפוצים מעולים בע״מ"
+              value={formData.companyName}
+              onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+              sx={{ 
+                '& .MuiInputBase-input': { textAlign: 'right', direction: 'rtl' },
+                '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+              }}
             />
             
             <TextField
@@ -320,6 +391,10 @@ const Suppliers = () => {
               onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
               error={formErrors.some(e => e.includes('מקצוע'))}
               helperText={formErrors.find(e => e.includes('מקצוע'))}
+              sx={{ 
+                '& .MuiInputBase-input': { textAlign: 'right', direction: 'rtl' },
+                '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+              }}
             />
             
             <Box display="flex" gap={2}>
@@ -331,6 +406,10 @@ const Suppliers = () => {
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 error={formErrors.some(e => e.includes('טלפון'))}
                 helperText={formErrors.find(e => e.includes('טלפון'))}
+                sx={{ 
+                  '& .MuiInputBase-input': { textAlign: 'right', direction: 'rtl' },
+                  '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+                }}
               />
               
               <TextField
@@ -342,6 +421,10 @@ const Suppliers = () => {
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 error={formErrors.some(e => e.includes('אימייל'))}
                 helperText={formErrors.find(e => e.includes('אימייל'))}
+                sx={{ 
+                  '& .MuiInputBase-input': { textAlign: 'left', direction: 'ltr' },
+                  '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+                }}
               />
             </Box>
             
@@ -352,26 +435,31 @@ const Suppliers = () => {
               value={formData.defaultVat}
               onChange={(e) => setFormData({ ...formData, defaultVat: parseFloat(e.target.value) || 0 })}
               inputProps={{ min: 0, max: 100, step: 0.1 }}
-              sx={{ maxWidth: 200 }}
+              sx={{ 
+                maxWidth: 200,
+                '& .MuiInputBase-input': { textAlign: 'right', direction: 'rtl' },
+                '& .MuiFormLabel-root': { right: 14, left: 'auto', transformOrigin: 'top right' }
+              }}
               error={formErrors.some(e => e.includes('מע"מ'))}
-              helperText={formErrors.find(e => e.includes('מע"מ')) || 'אחוז המע"מ שיחושב בחשבוניות מספק זה'}
+              helperText={formErrors.find(e => e.includes('מע"מ')) || 'אחוז המע״מ שיחושב בחשבוניות מספק זה'}
             />
           </Box>
 
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block', direction: 'rtl', textAlign: 'right' }}>
             * שדות חובה. נדרש לפחות טלפון או אימייל אחד. כתובת אימייל תאומת אוטומטית.
           </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>
-            ביטול
-          </Button>
+        <DialogActions sx={{ direction: 'rtl' }}>
           <Button 
             onClick={handleSubmit} 
             variant="contained"
-            disabled={!formData.name.trim() || !formData.profession.trim()}
+            disabled={!formData.firstName.trim() || !formData.lastName.trim() || !formData.profession.trim()}
+            sx={{ direction: 'rtl' }}
           >
             {isEditMode ? 'עדכן' : 'הוסף'}
+          </Button>
+          <Button onClick={handleCloseDialog} sx={{ direction: 'rtl' }}>
+            ביטול
           </Button>
         </DialogActions>
       </Dialog>
@@ -384,7 +472,7 @@ const Suppliers = () => {
         sx={{
           position: 'fixed',
           bottom: 16,
-          right: 16,
+          left: 16,
           display: { xs: 'flex', sm: 'none' }
         }}
       >

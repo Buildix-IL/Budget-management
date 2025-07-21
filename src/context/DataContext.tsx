@@ -249,7 +249,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const addSupplier = (data: SupplierFormData): Supplier => {
     const supplier: Supplier = {
       id: generateId(),
-      name: data.name,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      companyName: data.companyName,
       profession: data.profession,
       phone: data.phone || '',
       email: data.email || '',
@@ -280,7 +282,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const validateSupplier = (data: SupplierFormData): string[] => {
     const errors: string[] = [];
-    if (!data.name?.trim()) errors.push('שם הספק חובה');
+    if (!data.firstName?.trim()) errors.push('שם פרטי חובה');
+    if (!data.lastName?.trim()) errors.push('שם משפחה חובה');
     if (!data.profession?.trim()) errors.push('מקצוע חובה');
     if (!data.phone?.trim() && !data.email?.trim()) {
       errors.push('טלפון או אימייל חובה');
