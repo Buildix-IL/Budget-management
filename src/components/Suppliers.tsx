@@ -55,15 +55,6 @@ const Suppliers = () => {
            email.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
-  const getSupplierDisplayName = (supplier: Supplier) => {
-    const firstName = supplier.firstName || '';
-    const lastName = supplier.lastName || '';
-    const fullName = `${firstName} ${lastName}`.trim();
-    const companyName = supplier.companyName || '';
-    
-    return companyName ? `${companyName} (${fullName})` : fullName || 'ספק ללא שם';
-  }
-
   const handleOpenDialog = (supplier?: Supplier) => {
     if (supplier) {
       setSelectedSupplier(supplier)
