@@ -2,11 +2,11 @@ import { Typography, Box } from '@mui/material'
 
 const Invoices = () => {
   return (
-    <Box dir="rtl" sx={{ textAlign: 'right' }}>
-      <Typography variant="h4" gutterBottom sx={{ direction: 'rtl', textAlign: 'right' }}>
+    <Box>
+      <Typography variant="h4" gutterBottom>
         📄 חשבוניות
       </Typography>
-      <Typography variant="body1" sx={{ direction: 'rtl', textAlign: 'right' }}>
+      <Typography variant="body1">
         ...בקרוב
       </Typography>
     </Box>

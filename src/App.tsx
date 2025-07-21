@@ -55,15 +55,123 @@ const theme = createTheme({
       defaultProps: {
         dir: 'rtl',
       },
+      styleOverrides: {
+        root: {
+          direction: 'rtl',
+          '& .MuiInputBase-input': {
+            textAlign: 'right',
+            direction: 'rtl',
+          },
+          '& .MuiFormLabel-root': {
+            right: 14,
+            left: 'auto',
+            transformOrigin: 'top right',
+            textAlign: 'right',
+          },
+          '& .MuiFormHelperText-root': {
+            textAlign: 'right',
+            direction: 'rtl',
+          },
+          '& .MuiInputBase-root': {
+            direction: 'rtl',
+          },
+          // Special case for email fields - override for LTR
+          '&.email-field .MuiInputBase-input': {
+            textAlign: 'left',
+            direction: 'ltr',
+          },
+          '&.email-field .MuiInputBase-root': {
+            direction: 'ltr',
+          },
+        },
+      },
     },
     MuiDialog: {
       defaultProps: {
         dir: 'rtl',
       },
+      styleOverrides: {
+        paper: {
+          direction: 'rtl',
+        },
+      },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          direction: 'rtl',
+          textAlign: 'right',
+        },
+      },
+    },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: {
+          direction: 'rtl',
+        },
+      },
+    },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: {
+          direction: 'rtl',
+        },
+      },
     },
     MuiCard: {
       defaultProps: {
         dir: 'rtl',
+      },
+      styleOverrides: {
+        root: {
+          direction: 'rtl',
+          textAlign: 'right',
+        },
+      },
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          direction: 'rtl',
+          textAlign: 'right',
+        },
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          direction: 'rtl',
+          textAlign: 'right',
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          direction: 'rtl',
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          direction: 'rtl',
+        },
+      },
+    },
+    MuiMenu: {
+      styleOverrides: {
+        paper: {
+          direction: 'rtl',
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          direction: 'rtl',
+          textAlign: 'right',
+        },
       },
     },
   },
