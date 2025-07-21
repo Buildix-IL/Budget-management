@@ -285,6 +285,28 @@ export function DataProvider({ children }: { children: ReactNode }) {
     if (!data.phone?.trim() && !data.email?.trim()) {
       errors.push('טלפון או אימייל חובה');
     }
+    
+    // Email validation
+    if (data.email?.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(data.email.trim())) {
+        errors.push('כתובת האימייל אינה תקינה');
+      }
+    }
+    
+    // Phone validation (basic Israeli phone format)
+    if (data.phone?.trim()) {
+      const phoneRegex = /^(\+972|0)?[-\s]?[0-9]{1,2}[-\s]?[0-9]{7}$/;
+      if (!phoneRegex.test(data.phone.trim().replace(/[-\s]/g, ''))) {
+        errors.push('מספר הטלפון אינו תקין');
+      }
+    }
+    
+    // VAT validation
+    if (data.defaultVat < 0 || data.defaultVat > 100) {
+      errors.push('אחוז המע"מ חייב להיות בין 0 ל-100');
+    }
+    
     return errors;
   };
 

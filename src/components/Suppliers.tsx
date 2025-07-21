@@ -305,50 +305,61 @@ const Suppliers = () => {
             <TextField
               fullWidth
               label="שם הספק *"
+              placeholder="לדוגמה: חברת שיפוצים מעולים"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               error={formErrors.some(e => e.includes('שם'))}
+              helperText={formErrors.find(e => e.includes('שם'))}
             />
             
             <TextField
               fullWidth
               label="מקצוע *"
+              placeholder="לדוגמה: אלקטריקאי, צבע, חשמלאי"
               value={formData.profession}
               onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
               error={formErrors.some(e => e.includes('מקצוע'))}
+              helperText={formErrors.find(e => e.includes('מקצוע'))}
             />
             
             <Box display="flex" gap={2}>
               <TextField
                 fullWidth
                 label="טלפון"
+                placeholder="050-1234567"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 error={formErrors.some(e => e.includes('טלפון'))}
+                helperText={formErrors.find(e => e.includes('טלפון'))}
               />
               
               <TextField
                 fullWidth
                 label="אימייל"
                 type="email"
+                placeholder="example@domain.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 error={formErrors.some(e => e.includes('אימייל'))}
+                helperText={formErrors.find(e => e.includes('אימייל'))}
               />
             </Box>
             
             <TextField
               label="מע״מ ברירת מחדל (%)"
               type="number"
+              placeholder="18"
               value={formData.defaultVat}
               onChange={(e) => setFormData({ ...formData, defaultVat: parseFloat(e.target.value) || 0 })}
               inputProps={{ min: 0, max: 100, step: 0.1 }}
               sx={{ maxWidth: 200 }}
+              error={formErrors.some(e => e.includes('מע"מ'))}
+              helperText={formErrors.find(e => e.includes('מע"מ')) || 'אחוז המע"מ שיחושב בחשבוניות מספק זה'}
             />
           </Box>
 
           <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
-            * שדות חובה. נדרש לפחות טלפון או אימייל.
+            * שדות חובה. נדרש לפחות טלפון או אימייל אחד. כתובת אימייל תאומת אוטומטית.
           </Typography>
         </DialogContent>
         <DialogActions>
