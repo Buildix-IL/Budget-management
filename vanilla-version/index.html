@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ניהול תקציב פרויקט בניה</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ניהול תקציב פרויקט בניה</h1>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="dashboard">סקירה</button>
+            <button class="tab-btn" data-tab="suppliers">ספקים</button>
+            <button class="tab-btn" data-tab="quotes">הצעות מחיר</button>
+            <button class="tab-btn" data-tab="invoices">חשבוניות</button>
+            <button class="tab-btn" data-tab="payments">תשלומים</button>
+            <button class="tab-btn" data-tab="settings">הגדרות</button>
+        </nav>
+
+        <!-- סקירה כללית -->
+        <div id="dashboard" class="tab-content active">
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>סך חובות</h3>
+                    <div class="amount" id="total-debt">₪0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>שולם</h3>
+                    <div class="amount" id="total-paid">₪0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>יתרה לתשלום</h3>
+                    <div class="amount" id="remaining-debt">₪0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>הצעות מחיר פעילות</h3>
+                    <div class="amount" id="active-quotes">0</div>
+                </div>
+            </div>
+            
+            <div class="recent-activity">
+                <h3>פעילות אחרונה</h3>
+                <div id="recent-list"></div>
+            </div>
+        </div>
+
+        <!-- ספקים -->
+        <div id="suppliers" class="tab-content">
+            <div class="section-header">
+                <h2>ספקים</h2>
+                <button class="btn btn-primary" onclick="showSupplierForm()">הוסף ספק</button>
+            </div>
+            
+            <div class="suppliers-list" id="suppliers-list"></div>
+            
+            <!-- טופס הוספת ספק -->
+            <div id="supplier-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="supplier-modal-title">הוסף ספק חדש</h3>
+                        <span class="close" onclick="hideSupplierForm()">&times;</span>
+                    </div>
+                    <form id="supplier-form">
+                        <input type="hidden" id="supplier-id">
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>שם הספק *</label>
+                                <input type="text" id="supplier-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>מקצוע *</label>
+                                <input type="text" id="supplier-profession" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>טלפון</label>
+                                <input type="tel" id="supplier-phone">
+                            </div>
+                            <div class="form-group">
+                                <label>אימייל</label>
+                                <input type="email" id="supplier-email">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>מעמ ברירת מחדל (%)</label>
+                            <input type="number" id="supplier-default-vat" step="0.01" value="18">
+                        </div>
+                        
+                        <div id="supplier-fields">
+                            <!-- שדות דינמיים יתווספו כאן -->
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="button" onclick="addSupplierField()">הוסף שדה נוסף</button>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">שמור</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideSupplierForm()">ביטול</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- הצעות מחיר -->
+        <div id="quotes" class="tab-content">
+            <div class="section-header">
+                <h2>הצעות מחיר</h2>
+                <button class="btn btn-primary" onclick="showQuoteForm()">הוסף הצעת מחיר</button>
+            </div>
+            
+            <div class="quotes-list" id="quotes-list"></div>
+            
+            <!-- טופס הוספת הצעת מחיר -->
+            <div id="quote-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="quote-modal-title">הוסף הצעת מחיר חדשה</h3>
+                        <span class="close" onclick="hideQuoteForm()">&times;</span>
+                    </div>
+                    <form id="quote-form">
+                        <input type="hidden" id="quote-id">
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>ספק *</label>
+                                <select id="quote-supplier" required>
+                                    <option value="">בחר ספק</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>תיאור העבודה *</label>
+                                <input type="text" id="quote-description" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>סכום הצעה *</label>
+                                <input type="number" id="quote-amount" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>תאריך הצעה</label>
+                                <input type="date" id="quote-date">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>הערות</label>
+                            <textarea id="quote-notes" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>סטטוס</label>
+                            <select id="quote-status">
+                                <option value="pending">ממתין לאישור</option>
+                                <option value="accepted">התקבל</option>
+                                <option value="rejected">נדחה</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">שמור</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideQuoteForm()">ביטול</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- חשבוניות -->
+        <div id="invoices" class="tab-content">
+            <div class="section-header">
+                <h2>חשבוניות</h2>
+                <button class="btn btn-primary" onclick="showInvoiceForm()">הוסף חשבונית</button>
+            </div>
+            
+            <div class="invoices-list" id="invoices-list"></div>
+            
+            <!-- טופס הוספת חשבונית -->
+            <div id="invoice-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="invoice-modal-title">הוסף חשבונית חדשה</h3>
+                        <span class="close" onclick="hideInvoiceForm()">&times;</span>
+                    </div>
+                    <form id="invoice-form">
+                        <input type="hidden" id="invoice-id">
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>ספק *</label>
+                                <select id="invoice-supplier" required>
+                                    <option value="">בחר ספק</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>תיאור *</label>
+                                <input type="text" id="invoice-description" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>הצעת מחיר</label>
+                                <select id="invoice-quote">
+                                    <option value="">בחר הצעת מחיר (אופציונלי)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>סכום בסיס *</label>
+                                <input type="number" id="invoice-amount" step="0.01" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>מעמ (%)</label>
+                                <input type="number" id="invoice-vat" step="0.01" value="18">
+                            </div>
+                            <div class="form-group">
+                                <label>הנחה</label>
+                                <div class="form-row">
+                                    <input type="number" id="invoice-discount" step="0.01" placeholder="סכום הנחה">
+                                    <select id="invoice-discount-type">
+                                        <option value="amount">₪</option>
+                                        <option value="percent">%</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>סטטוס</label>
+                            <select id="invoice-status"></select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="invoice-has-installments">
+                                פריסה לתשלומים
+                            </label>
+                        </div>
+                        
+                        <div id="installments-section" style="display:none;">
+                            <h4>פריסת תשלומים</h4>
+                            <div id="installments-list"></div>
+                            <button type="button" onclick="addInstallment()">הוסף תשלום</button>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">שמור</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideInvoiceForm()">ביטול</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- תשלומים -->
+        <div id="payments" class="tab-content">
+            <div class="section-header">
+                <h2>תשלומים</h2>
+                <button class="btn btn-primary" onclick="showPaymentForm()">הוסף תשלום</button>
+            </div>
+            
+            <div class="payments-list" id="payments-list"></div>
+            
+            <!-- טופס הוספת תשלום -->
+            <div id="payment-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>הוסף תשלום חדש</h3>
+                        <span class="close" onclick="hidePaymentForm()">&times;</span>
+                    </div>
+                    <form id="payment-form">
+                        <div class="form-group">
+                            <label>חשבונית *</label>
+                            <select id="payment-invoice" required>
+                                <option value="">בחר חשבונית</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>סכום תשלום *</label>
+                                <input type="number" id="payment-amount" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>תאריך תשלום *</label>
+                                <input type="date" id="payment-date" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>אמצעי תשלום</label>
+                                <select id="payment-method">
+                                    <option value="bank_transfer">העברה בנקאית</option>
+                                    <option value="cash">מזומן</option>
+                                    <option value="check">צ'ק</option>
+                                    <option value="credit_card">כרטיס אשראי</option>
+                                    <option value="other">אחר</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>מספר אסמכתא</label>
+                                <input type="text" id="payment-reference">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>הערות</label>
+                            <textarea id="payment-notes" rows="2"></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">שמור תשלום</button>
+                            <button type="button" class="btn btn-secondary" onclick="hidePaymentForm()">ביטול</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- הגדרות -->
+        <div id="settings" class="tab-content">
+            <div class="section-header">
+                <h2>הגדרות</h2>
+            </div>
+            
+            <form id="settings-form">
+                <div class="form-group">
+                    <label>מעמ ברירת מחדל (%)</label>
+                    <input type="number" id="default-vat" step="0.01" value="18">
+                </div>
+                
+                <div class="form-group">
+                    <label>סטטוסים זמינים</label>
+                    <div id="statuses-list"></div>
+                    <div class="form-row">
+                        <input type="text" id="new-status" placeholder="הוסף סטטוס חדש">
+                        <button type="button" onclick="addStatus()">הוסף</button>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">שמור הגדרות</button>
+                    <button type="button" class="btn btn-danger" onclick="exportData()">ייצוא נתונים</button>
+                    <button type="button" class="btn btn-secondary" onclick="importData()">ייבוא נתונים</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
