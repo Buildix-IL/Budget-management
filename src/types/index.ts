@@ -34,6 +34,7 @@ export interface Quote extends BaseEntity {
   supplierId: string;
   description: string;
   amount: number;
+  date?: string;
   status: QuoteStatus;
   notes?: string;
 }
@@ -42,6 +43,7 @@ export interface QuoteFormData {
   supplierId: string;
   description: string;
   amount: number;
+  date?: string;
   status: QuoteStatus;
   notes?: string;
 }
