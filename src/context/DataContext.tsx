@@ -2,8 +2,7 @@ import { createContext, useContext, useReducer, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type {
   Supplier, Quote, Invoice, Payment, Settings, Statistics,
-  SupplierFormData, QuoteFormData, InvoiceFormData, PaymentFormData,
-  InvoiceStatus, QuoteStatus
+  SupplierFormData, QuoteFormData, InvoiceFormData, PaymentFormData
 } from '../types';
 
 // State interface
@@ -50,6 +49,7 @@ interface DataContextType {
   deleteQuote: (id: string) => void;
   getQuoteById: (id: string) => Quote | undefined;
   getQuotesBySupplier: (supplierId: string) => Quote[];
+  validateQuote: (data: QuoteFormData) => string[];
   // Invoices
   addInvoice: (data: InvoiceFormData) => Invoice;
   updateInvoice: (id: string, data: Partial<Invoice>) => Invoice | null;
@@ -60,6 +60,8 @@ interface DataContextType {
   addPayment: (data: PaymentFormData) => Payment;
   deletePayment: (id: string) => void;
   getPaymentsByInvoice: (invoiceId: string) => Payment[];
+  // Settings
+  updateSettings: (settings: Partial<Settings>) => void;
   // Utils
   exportData: () => string;
   importData: (jsonData: string) => boolean;
@@ -355,6 +357,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       amount: data.amount,
       status: data.status,
       notes: data.notes,
+      date: data.date || new Date().toISOString(), // Add date field
       createdAt: new Date().toISOString()
     };
     dispatch({ type: 'ADD_QUOTE', payload: quote });
@@ -380,6 +383,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const getQuotesBySupplier = (supplierId: string): Quote[] => {
     return state.quotes.filter(q => q.supplierId === supplierId);
+  };
+
+  const validateQuote = (data: QuoteFormData): string[] => {
+    const errors: string[] = [];
+    if (!data.supplierId) errors.push('ספק חובה');
+    if (!data.description?.trim()) errors.push('תיאור חובה');
+    if (data.amount <= 0) errors.push('סכום חובה וחייב להיות חיובי');
+    if (!data.date) errors.push('תאריך חובה');
+    return errors;
   };
 
   // Invoice functions
@@ -449,6 +461,11 @@ export function DataProvider({ children }: { children: ReactNode }) {
     return state.payments.filter(p => p.invoiceId === invoiceId);
   };
 
+  // Settings functions
+  const updateSettings = (settings: Partial<Settings>): void => {
+    dispatch({ type: 'UPDATE_SETTINGS', payload: settings });
+  };
+
   // Export/Import functions
   const exportData = (): string => {
     const exportData = {
@@ -496,6 +513,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     deleteQuote,
     getQuoteById,
     getQuotesBySupplier,
+    validateQuote,
     // Invoices
     addInvoice,
     updateInvoice,
@@ -506,6 +524,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     addPayment,
     deletePayment,
     getPaymentsByInvoice,
+    // Settings
+    updateSettings,
     // Utils
     exportData,
     importData
